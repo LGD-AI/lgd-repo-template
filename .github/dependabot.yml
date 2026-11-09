@@ -1,0 +1,22 @@
+# Dependabot 依赖升级与安全告警
+# 说明：本文件管的是"依赖升级 PR"；"依赖漏洞告警"需要在仓库 Settings 里
+# 单独开启（Code security and analysis → Dependabot alerts）。
+# 两者不同：没有本文件 → 不自动升级；没开 alerts → 漏洞接口返回 403。
+
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+
+  # 按仓库实际技术栈启用下面之一，不适用的删掉
+  # - package-ecosystem: "pip"
+  #   directory: "/"
+  #   schedule:
+  #     interval: "weekly"
+  # - package-ecosystem: "npm"
+  #   directory: "/"
+  #   schedule:
+  #     interval: "weekly"

@@ -1,0 +1,17 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  self-check:
+    # 套用到具体仓时把 <owner>/<repo>@<sha> 换成实际位置
+    uses: ./.github/workflows/self-check.yml
+    with:
+      python_version: "3.12"

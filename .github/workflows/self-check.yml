@@ -1,0 +1,65 @@
+name: LGD Self Check
+
+# 可复用自检流水线：其他仓库用 uses: <owner>/<repo>/.github/workflows/self-check.yml@<sha>
+# 硬约束：权限最小化；第三方 action 必须 pin 到 commit SHA（此处用 tag 仅为示例，
+# 正式套用时替换为 SHA）。
+
+on:
+  workflow_call:
+    inputs:
+      python_version:
+        description: Python 版本
+        type: string
+        required: false
+        default: "3.12"
+    outputs:
+      verdict:
+        description: 自检结论 PASS / FAIL / PARTIAL / NOT VERIFIED / BLOCKED
+        value: ${{ jobs.check.outputs.verdict }}
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      verdict: ${{ steps.verdict.outputs.value }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ inputs.python_version }}
+
+      - name: 基线文件自检（许可证 / CODEOWNERS / dependabot）
+        id: baseline
+        run: |
+          echo "== 基线文件检查 =="
+          fail=0
+          for f in LICENSE SECURITY.md CONTRIBUTING.md CODEOWNERS .github/dependabot.yml; do
+            if [ -f "$f" ]; then echo "OK   $f"; else echo "MISS $f"; fail=1; fi
+          done
+          exit $fail
+
+      - name: 工作流权限自检（必须显式 permissions）
+        if: always()
+        run: |
+          echo "== workflow permissions 检查 =="
+          miss=0
+          for wf in .github/workflows/*.yml; do
+            [ -e "$wf" ] || continue
+            if grep -q '^permissions:' "$wf"; then echo "OK   $wf"; else echo "MISS $wf"; miss=1; fi
+          done
+          exit $miss
+
+      - name: 结论
+        id: verdict
+        if: always()
+        run: |
+          if [ "${{ job.status }}" = "success" ]; then
+            echo "value=PASS" >> "$GITHUB_OUTPUT"
+          else
+            echo "value=FAIL" >> "$GITHUB_OUTPUT"
+          fi
+          echo "结论：$(cat "$GITHUB_OUTPUT" || true)"

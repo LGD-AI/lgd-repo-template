@@ -1,0 +1,13 @@
+# CODEOWNERS — 默认审阅人
+#
+# 用法：每行 "<路径模式> @账号"
+# 新建仓库时把 @zhaoxinghua09-cell 换成该仓的实际所有者。
+# 注意：本文件必须在默认分支上存在才生效。
+
+*                       @zhaoxinghua09-cell
+
+# 治理与合规件：改动必须由所有者本人审
+/.github/               @zhaoxinghua09-cell
+/SECURITY.md            @zhaoxinghua09-cell
+/LICENSE                @zhaoxinghua09-cell
+/CONTRIBUTING.md        @zhaoxinghua09-cell
