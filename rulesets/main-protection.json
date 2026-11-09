@@ -31,5 +31,12 @@
       }
     }
   ],
-  "bypass_actors": []
+  "bypass_actors": [
+    {
+      "actor_id": 288894633,
+      "actor_type": "OrganizationAdmin",
+      "bypass_mode": "always"
+    }
+  ],
+  "_note": "组织管理员保留 always 旁路：本组织仅 1 名成员，若不设旁路，require_code_owner_review + 1 人审批会使任何 PR 永久无法合并（自锁）。旁路只给 OrganizationAdmin，bot / 其他账号仍必须走 PR + 检查。每次旁路应在 audit/ 留一条记录。"
 }
